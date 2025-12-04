@@ -5,7 +5,7 @@ type HTTPS struct {
 }
 
 type Config struct {
-	Env          string
-	Storage_Path string
-	HTTPS
+	Env          string `yaml:"env" env:"Env" env-required:"True"`
+	Storage_Path string `yaml:"Storage_Path"`
+	HTTPS        `yaml:"http_server:"`
 }
