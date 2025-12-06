@@ -18,12 +18,7 @@ type HTTPS struct {
 }
 
 type Database struct {
-	Host            string        `yaml:"host" env:"DB_HOST"`
-	Port            int           `yaml:"port" env:"DB_PORT"`
-	User            string        `yaml:"user" env:"DB_USER"`
-	Password        string        `yaml:"password" env:"DB_PASSWORD"`
-	Name            string        `yaml:"name" env:"DB_NAME"`
-	SSLMode         string        `yaml:"ssl_mode" env:"DB_SSL_MODE"`
+	Path            string        `yaml:"path" env:"DB_PATH"`
 	MaxOpenConns    int           `yaml:"max_open_conns" env:"DB_MAX_OPEN_CONNS"`
 	MaxIdleConns    int           `yaml:"max_idle_conns" env:"DB_MAX_IDLE_CONNS"`
 	ConnMaxLifetime time.Duration `yaml:"conn_max_lifetime" env:"DB_CONN_MAX_LIFETIME"`
@@ -117,14 +112,14 @@ func (c *Config) SetDefaults() {
 		c.Logger.Format = "json"
 	}
 
-	if c.Database.SSLMode == "" {
-		c.Database.SSLMode = "disable"
+	if c.Database.Path == "" {
+		c.Database.Path = "./data.db"
 	}
 	if c.Database.MaxOpenConns == 0 {
-		c.Database.MaxOpenConns = 25
+		c.Database.MaxOpenConns = 1 // SQLite works best with 1 for writes
 	}
 	if c.Database.MaxIdleConns == 0 {
-		c.Database.MaxIdleConns = 5
+		c.Database.MaxIdleConns = 1
 	}
 	if c.Database.ConnMaxLifetime == 0 {
 		c.Database.ConnMaxLifetime = 5 * time.Minute
@@ -135,3 +130,4 @@ func (c *Config) SetDefaults() {
 func (c *Config) GetServerAddress() string {
 	return fmt.Sprintf("%s:%d", c.HTTPS.Address, c.HTTPS.Port)
 }
+
